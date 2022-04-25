@@ -101,12 +101,10 @@ let logger = (request, response, next) => {
 app.get("/user/tweets/feed/", logger, async (request, response) => {
   const { username } = request;
   console.log(username);
-  let querytweet = `select username,tweet,date_time as dateTime from 
-  ((user inner join follower on user.user_id=follower.follower_user_id) as t 
- inner join tweet on t.following_user_id = tweet.user_id ) as q 
- 
-  where user.username = "${username}"
-  limit 4;`;
+  let querytweet = `select * from 
+  (user inner join follower on user.user_id=follower.follower_user_id) as t
+  left join tweet on t.following_user_id = tweet.user_id 
+   where username = "${username}";`;
   let tweets = await db.all(querytweet);
   console.log(tweets);
 });
